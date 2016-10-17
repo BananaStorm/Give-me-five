@@ -1,5 +1,5 @@
 module.exports = {
-  entry: "./src/app.js",
+  entry: "./src/givemefive.js",
   output: {
   	path: "./dist/",
   	publicPath: './dist/',

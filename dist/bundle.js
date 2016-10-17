@@ -58,43 +58,45 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// list.init(students)
-	// console.log(list)
+	var students = list;
 
-	//let me = new Student('Clément', 'Dussol');
+	function init() {
 
-	var GiveMeFive = {
+		var s = [new _student2.default('Clément', 'Dussol'), new _student2.default('Clément', 'Teboul')];
 
-		studentsList: list,
-
-		init: function init() {
-
-			var students = [new _student2.default('Clément', 'Dussol'), new _student2.default('Clément', 'Teboul')];
-
-			this.studentsList.init(students, "#students");
-		}
-	};
-	GiveMeFive.init();
-	console.log(GiveMeFive);
+		students.init(s, "#students");
+		console.log(students);
+	}
+	init();
+	console.log('coucou');
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
+	var _stats = __webpack_require__(4);
+
+	var _stats2 = _interopRequireDefault(_stats);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var $ = __webpack_require__(2);
 
 	var Student = function Student(firstName, lastName) {
 		_classCallCheck(this, Student);
 
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.score = 0;
+		this.stats = new _stats2.default();
+		this.id;
 	};
 
 	exports.default = Student;
@@ -10346,15 +10348,61 @@
 
 			var s = students[i];
 			var $clone = $template.clone();
+			$clone.attr('id', s.firstName + s.lastName);
 			$clone.children('.firstName').html(s.firstName);
 			$clone.children('.lastName').html(s.lastName);
 			$clone.children('.score').html(s.score);
 			$clone.appendTo(id);
+			s.id = i;
 		}
 	};
 
+	/*function sort(prop){
+		students.sort(function)
+	}*/
 	exports.students = students;
 	exports.init = init;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Stats = function () {
+		function Stats() {
+			_classCallCheck(this, Stats);
+
+			this.presence = 0;
+			this.participation = 0;
+			this.pertinence = 0;
+			this.autonomie = 0;
+			this.oral = 0;
+		}
+
+		_createClass(Stats, [{
+			key: "getScore",
+			value: function getScore() {
+				var s = 0;
+				for (stat in this) {
+					s += stat;
+				}
+				return s;
+			}
+		}]);
+
+		return Stats;
+	}();
+
+	exports.default = Stats;
 
 /***/ }
 /******/ ]);
