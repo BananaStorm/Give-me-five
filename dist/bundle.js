@@ -58,8 +58,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var $ = __webpack_require__(2);
-
 	// list.init(students)
 	// console.log(list)
 
@@ -67,12 +65,13 @@
 
 	var GiveMeFive = {
 
-		students: list,
+		studentsList: list,
 
 		init: function init() {
 
 			var students = [new _student2.default('Clément', 'Dussol'), new _student2.default('Clément', 'Teboul')];
-			this.students.init(students);
+
+			this.studentsList.init(students, "#students");
 		}
 	};
 	GiveMeFive.init();
@@ -10328,16 +10327,30 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	var $ = __webpack_require__(2);
+
 	var students = [];
-	function init(list) {
+	function init(list, id) {
+
 		exports.students = students = list;
+		var $template = $(id).children().detach();
+
+		for (var i = 0; i < students.length; i++) {
+
+			var s = students[i];
+			var $clone = $template.clone();
+			$clone.children('.firstName').html(s.firstName);
+			$clone.children('.lastName').html(s.lastName);
+			$clone.children('.score').html(s.score);
+			$clone.appendTo(id);
+		}
 	};
 
 	exports.students = students;

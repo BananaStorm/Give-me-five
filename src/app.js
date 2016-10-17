@@ -1,6 +1,5 @@
 import Student from './student.class'
 import * as list from './studentlist'
-var $ = require('jQuery')
 
 
 
@@ -13,7 +12,7 @@ var $ = require('jQuery')
 
 let GiveMeFive = {
 	
-	students : list,
+	studentsList : list,
 	
 	init: function(){
 		
@@ -22,7 +21,9 @@ let GiveMeFive = {
 			new Student('Clément', 'Dussol'),
 			new Student('Clément', 'Teboul')
 		];
-		this.students.init(students);		
+		
+		this.studentsList.init(students, "#students");
+
 	}
 }
 GiveMeFive.init()
