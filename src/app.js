@@ -1,5 +1,6 @@
-import logger from './logger';
+import Student from './student.class'
+var $ = require('jQuery')
 
-document.write('Welcome to my application.');
-logger(); // yes
-console.log('app loaded');
+let me = new Student('Clément', 'Dussol');
+
+console.log(me);
