@@ -50,13 +50,33 @@
 
 	var _student2 = _interopRequireDefault(_student);
 
+	var _studentlist = __webpack_require__(3);
+
+	var list = _interopRequireWildcard(_studentlist);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var $ = __webpack_require__(2);
 
-	var me = new _student2.default('Clément', 'Dussol');
+	// list.init(students)
+	// console.log(list)
 
-	console.log(me);
+	//let me = new Student('Clément', 'Dussol');
+
+	var GiveMeFive = {
+
+		students: list,
+
+		init: function init() {
+
+			var students = [new _student2.default('Clément', 'Dussol'), new _student2.default('Clément', 'Teboul')];
+			this.students.init(students);
+		}
+	};
+	GiveMeFive.init();
+	console.log(GiveMeFive);
 
 /***/ },
 /* 1 */
@@ -10305,6 +10325,23 @@
 	return jQuery;
 	} );
 
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var students = [];
+	function init(list) {
+		exports.students = students = list;
+	};
+
+	exports.students = students;
+	exports.init = init;
 
 /***/ }
 /******/ ]);
