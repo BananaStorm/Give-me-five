@@ -10,8 +10,8 @@ export default class Stats {
 
 	getScore(){
 		let s = 0;
-		for (stat in this) {
-			s += stat;
+		for (let stat in this) {
+			s += this[stat];
 		}
 		return s;
 	}

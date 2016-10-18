@@ -8,35 +8,44 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-<!-- 
-					<ul id="students" class="list-group">
-					  <li class="list-group-item student"><span class=""></span><span class="lastName"></span><span class="score"></span></li>
-					</ul>	 -->		
-	<div class="panel panel-default">
-	  <!-- Default panel contents -->
-	  <div class="panel-heading">Panel heading</div>
+<!-- 	<div class="panel panel-default">
+		<div class="panel-heading">Panel heading</div>
 
-	  <!-- Table -->
-	  <table class="table" >
-	  	<thead>
-	  		<td>Prénom</td>
-	  		<td>Nom</td>
-	  		<td>Score</td>
-	  	</thead>
-	  	<tbody id="students">
-		    <tr class="student">
-		    	<td class="firstName"></td>
-		    	<td class="lastName"></td>
-		    	<td class="score"></td>
-		    	<td class="icons">
-		    		<i class="fa fa-thumbs-up"></i>
-		    		<i class="fa fa-clock-o"></i>
-		    		<i class="fa fa-thumbs-down"></i>
-		    	</td>
-		    </tr>	  		
-	  	</tbody>
-
-	  </table>
+		<table class="table" >
+			<thead>
+				<td>Prénom</td>
+				<td>Nom</td>
+				<td>Score</td>
+			</thead>
+			<tbody id="students">
+				<tr class="student">
+					<td class="firstName"></td>
+					<td class="lastName"></td>
+					<td class="score"></td>
+					<td class="icons">
+						<i class="fa fa-thumbs-up"></i>
+						<i class="fa fa-clock-o"></i>
+						<i class="fa fa-thumbs-down"></i>
+					</td>
+				</tr>	  		
+			</tbody>
+		</table>
+	</div> -->
+	<a href="https://slack.com/oauth/authorize?scope=identity.basic&client_id=86302774640.92680881859"><img alt="Sign in with Slack" height="40" width="172" src="https://platform.slack-edge.com/img/sign_in_with_slack.png" srcset="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x" /></a>
+	<div class='container' id='students'>
+		<div class='col-md-6'>
+			<div class='student'>
+				<p class="name">
+					<span class="firstName"></span> <span class="lastName"></span>
+				</p>
+				<p class="score"></p>
+				<div class="icons">
+					<i class="fa fa-thumbs-up"></i>
+					<i class="fa fa-clock-o"></i>
+					<i class="fa fa-thumbs-down"></i>
+				</div>
+			</div>
+		</div>	
 	</div>
 	<script src="bundle.js"></script>
 </body>

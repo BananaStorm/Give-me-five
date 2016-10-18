@@ -1,8 +1,7 @@
 import Student from './student.class'
-import * as list from './studentlist'
-
-	
-let	students = list;
+import * as studentsList from './studentlist'
+import * as slack from './slack'
+var $ = require('jQuery');
 	
 function init(){
 		
@@ -12,10 +11,12 @@ function init(){
 		new Student('Clément', 'Teboul')
 	];
 	
-	students.init(s, "#students");
-	console.log(students)
+	studentsList.init(s, "#students");
 }
-init()
-console.log('coucou');
 
+init()
+console.log(slack);
+slack.getMembersInfos(function(p){
+	console.log(p)
+});
 

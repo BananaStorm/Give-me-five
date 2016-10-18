@@ -40,8 +40,9 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50,28 +51,36 @@
 
 	var _student2 = _interopRequireDefault(_student);
 
-	var _studentlist = __webpack_require__(3);
+	var _studentlist = __webpack_require__(4);
 
-	var list = _interopRequireWildcard(_studentlist);
+	var studentsList = _interopRequireWildcard(_studentlist);
+
+	var _slack = __webpack_require__(143);
+
+	var slack = _interopRequireWildcard(_slack);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var students = list;
+	var $ = __webpack_require__(3);
 
 	function init() {
 
 		var s = [new _student2.default('Clément', 'Dussol'), new _student2.default('Clément', 'Teboul')];
 
-		students.init(s, "#students");
-		console.log(students);
+		studentsList.init(s, "#students");
 	}
+
 	init();
-	console.log('coucou');
+	console.log(slack);
+	slack.getMembersInfos(function (p) {
+		console.log(p);
+	});
 
 /***/ },
-/* 1 */
+
+/***/ 1:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80,7 +89,7 @@
 		value: true
 	});
 
-	var _stats = __webpack_require__(4);
+	var _stats = __webpack_require__(2);
 
 	var _stats2 = _interopRequireDefault(_stats);
 
@@ -88,7 +97,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var $ = __webpack_require__(2);
+	var $ = __webpack_require__(3);
 
 	var Student = function Student(firstName, lastName) {
 		_classCallCheck(this, Student);
@@ -102,7 +111,50 @@
 	exports.default = Student;
 
 /***/ },
-/* 2 */
+
+/***/ 2:
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Stats = function () {
+		function Stats() {
+			_classCallCheck(this, Stats);
+
+			this.presence = 0;
+			this.participation = 0;
+			this.pertinence = 0;
+			this.autonomie = 0;
+			this.oral = 0;
+		}
+
+		_createClass(Stats, [{
+			key: "getScore",
+			value: function getScore() {
+				var s = 0;
+				for (var stat in this) {
+					s += this[stat];
+				}
+				return s;
+			}
+		}]);
+
+		return Stats;
+	}();
+
+	exports.default = Stats;
+
+/***/ },
+
+/***/ 3:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10328,7 +10380,8 @@
 
 
 /***/ },
-/* 3 */
+
+/***/ 4:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10336,9 +10389,10 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	var $ = __webpack_require__(2);
+	var $ = __webpack_require__(3);
 
 	var students = [];
+
 	function init(list, id) {
 
 		exports.students = students = list;
@@ -10349,60 +10403,64 @@
 			var s = students[i];
 			var $clone = $template.clone();
 			$clone.attr('id', s.firstName + s.lastName);
-			$clone.children('.firstName').html(s.firstName);
-			$clone.children('.lastName').html(s.lastName);
-			$clone.children('.score').html(s.score);
+			$clone.find('.firstName').html(s.firstName);
+			$clone.find('.lastName').html(s.lastName);
+			$clone.find('.score').html(s.stats.getScore() + " pts");
 			$clone.appendTo(id);
 			s.id = i;
 		}
 	};
 
-	/*function sort(prop){
-		students.sort(function)
-	}*/
 	exports.students = students;
 	exports.init = init;
 
 /***/ },
-/* 4 */
-/***/ function(module, exports) {
 
-	"use strict";
+/***/ 143:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	var token = 'xoxp-86302774640-87013896737-92771216278-2c1b2a344a91f24cddd799c17b4b5bb5';
+	var groupID = 'G2J97PBUP';
+	var $ = __webpack_require__(3);
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var profiles = [];
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function getMembersInfos(callback) {
+		var tk = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : token;
+		var grpId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : groupID;
 
-	var Stats = function () {
-		function Stats() {
-			_classCallCheck(this, Stats);
 
-			this.presence = 0;
-			this.participation = 0;
-			this.pertinence = 0;
-			this.autonomie = 0;
-			this.oral = 0;
-		}
+		$.ajax('https://slack.com/api/groups.info?token=' + tk + '&channel=' + grpId + '&pretty=1').done(function (data) {
 
-		_createClass(Stats, [{
-			key: "getScore",
-			value: function getScore() {
-				var s = 0;
-				for (stat in this) {
-					s += stat;
-				}
-				return s;
+			var members = data.group.members;
+
+			for (var i = 0; i < members.length; i++) {
+				$.ajax('https://slack.com/api/users.info?token=' + tk + '&user=' + members[i] + '&pretty=1').done(function (data) {
+					var member = {};
+					var slackProfile = data.user.profile;
+					member.firstName = slackProfile.first_name;
+					member.lastName = slackProfile.last_name;
+					member.picture = slackProfile.image_192;
+					member.id = data.user.id;
+
+					profiles.push(member);
+				});
 			}
-		}]);
 
-		return Stats;
-	}();
+			if (callback) {
+				callback(profiles);
+			}
+		});
+	}
 
-	exports.default = Stats;
+	exports.profiles = profiles;
+	exports.getMembersInfos = getMembersInfos;
 
 /***/ }
-/******/ ]);
+
+/******/ });
