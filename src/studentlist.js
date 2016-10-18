@@ -11,9 +11,11 @@ function init(list, id){
 		
 		let s = students[i];
 		let $clone = $template.clone();
-		$clone.attr('id', s.firstName + s.lastName)
+		$clone.attr('id', s.firstName + s.lastName);
+		$clone.find('.picture').attr('src', s.picture);
 		$clone.find('.firstName').html(s.firstName);
 		$clone.find('.lastName').html(s.lastName);
+		$clone.find('.name').css('background-color', s.color);
 		$clone.find('.score').html(s.stats.getScore() + " pts");
 		$clone.appendTo(id);
 		s.id = i;

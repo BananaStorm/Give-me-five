@@ -40,9 +40,8 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55,7 +54,7 @@
 
 	var studentsList = _interopRequireWildcard(_studentlist);
 
-	var _slack = __webpack_require__(143);
+	var _slack = __webpack_require__(5);
 
 	var slack = _interopRequireWildcard(_slack);
 
@@ -67,20 +66,25 @@
 
 	function init() {
 
-		var s = [new _student2.default('Clément', 'Dussol'), new _student2.default('Clément', 'Teboul')];
+		var s = [];
 
-		studentsList.init(s, "#students");
+		// Appel de getMembersInfos avec comme argument la fonction de callback qui sera appelée quand toutes mes requetes seront terminées
+		slack.getMembersInfos(function (profiles) {
+
+			// Pour chaque profil récupéré par mes requetes, on crée une instance de Student		
+			for (var i = 0; i < profiles.length; i++) {
+				var p = profiles[i];
+				s.push(new _student2.default(p.firstName, p.lastName, p.picture, p.color));
+			}
+			// on initie studentsList en passant la liste des instances de Student
+			studentsList.init(s, "#students");
+		});
 	}
 
 	init();
-	console.log(slack);
-	slack.getMembersInfos(function (p) {
-		console.log(p);
-	});
 
 /***/ },
-
-/***/ 1:
+/* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -99,11 +103,13 @@
 
 	var $ = __webpack_require__(3);
 
-	var Student = function Student(firstName, lastName) {
+	var Student = function Student(firstName, lastName, picture, color) {
 		_classCallCheck(this, Student);
 
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.picture = picture;
+		this.color = color;
 		this.stats = new _stats2.default();
 		this.id;
 	};
@@ -111,8 +117,7 @@
 	exports.default = Student;
 
 /***/ },
-
-/***/ 2:
+/* 2 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -153,8 +158,7 @@
 	exports.default = Stats;
 
 /***/ },
-
-/***/ 3:
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10380,8 +10384,7 @@
 
 
 /***/ },
-
-/***/ 4:
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10403,8 +10406,10 @@
 			var s = students[i];
 			var $clone = $template.clone();
 			$clone.attr('id', s.firstName + s.lastName);
+			$clone.find('.picture').attr('src', s.picture);
 			$clone.find('.firstName').html(s.firstName);
 			$clone.find('.lastName').html(s.lastName);
+			$clone.find('.name').css('background-color', s.color);
 			$clone.find('.score').html(s.stats.getScore() + " pts");
 			$clone.appendTo(id);
 			s.id = i;
@@ -10415,8 +10420,7 @@
 	exports.init = init;
 
 /***/ },
-
-/***/ 143:
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10424,43 +10428,91 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	var token = 'xoxp-86302774640-87013896737-92771216278-2c1b2a344a91f24cddd799c17b4b5bb5';
-	var groupID = 'G2J97PBUP';
+	exports.getMembersInfos = exports.getCode = exports.profiles = undefined;
+
+	var _slack = __webpack_require__(6);
+
+	var secret = _interopRequireWildcard(_slack);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	var $ = __webpack_require__(3);
 
 	var profiles = [];
 
+	function getCode() {
+		var query = window.location.search.substring(1);
+		if (query.length == 0) {
+			return query.length;
+		}
+		var vars = query.split('&');
+		var pairs = {};
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split('=');
+			pairs[pair[0]] = pair[1];
+		}
+		return pairs;
+	}
+
 	function getMembersInfos(callback) {
-		var tk = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : token;
-		var grpId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : groupID;
+		var tk = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : secret.token;
+		var grpId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : secret.groupID;
 
 
+		// Première requete pour recupérer les ID
 		$.ajax('https://slack.com/api/groups.info?token=' + tk + '&channel=' + grpId + '&pretty=1').done(function (data) {
 
-			var members = data.group.members;
+			// Quand elle est finie, on stock les id dans un tableau
+			var ids = data.group.members;
+			var requests = [];
 
-			for (var i = 0; i < members.length; i++) {
-				$.ajax('https://slack.com/api/users.info?token=' + tk + '&user=' + members[i] + '&pretty=1').done(function (data) {
+			// Pour chaque élément du tableau ids
+			for (var i = 0; i < ids.length; i++) {
+				// On lance une requete pour recupérer les infos de l'utilisateur grace a son id et on ajout la requete au tableau requests
+				requests.push($.ajax('https://slack.com/api/users.info?token=' + tk + '&user=' + ids[i] + '&pretty=1').done(function (data) {
+
+					//Quand cette requete est terminée, on crée un objet qui va accueillir les informations de chaque utilisateur
 					var member = {};
 					var slackProfile = data.user.profile;
+
 					member.firstName = slackProfile.first_name;
 					member.lastName = slackProfile.last_name;
 					member.picture = slackProfile.image_192;
 					member.id = data.user.id;
+					member.color = '#' + data.user.color;
 
+					//console.log(data.user);
+
+					// On l'ajoute au tableau profiles
 					profiles.push(member);
-				});
+				}));
 			}
 
-			if (callback) {
-				callback(profiles);
-			}
+			// Quand toutes les requetes contenues dans requests sont terminées
+			$.when.apply($, requests).then(function () {
+				// On appelle le callback en passant notre liste d'objets utilisateurs (profiles)
+				if (callback) {
+					callback(profiles);
+				}
+			});
 		});
 	}
 
 	exports.profiles = profiles;
+	exports.getCode = getCode;
 	exports.getMembersInfos = getMembersInfos;
 
-/***/ }
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
 
-/******/ });
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.token = token;
+	exports.groupID = groupID;
+
+/***/ }
+/******/ ]);
