@@ -62,10 +62,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var $ = __webpack_require__(3);
-
 	function init() {
-
+		$('.loader').fadeIn(500);
 		var s = [];
 
 		// Appel de getMembersInfos avec comme argument la fonction de callback qui sera appelée quand toutes mes requetes seront terminées
@@ -77,11 +75,24 @@
 				s.push(new _student2.default(p.firstName, p.lastName, p.picture, p.color));
 			}
 			// on initie studentsList en passant la liste des instances de Student
-			studentsList.init(s, "#students");
+			studentsList.init(s, "#students", 4);
+			onAppLoaded();
+			console.log(studentsList);
+
+			//studentsList.hide(studentsList.students[0]);
 		});
 	}
 
 	init();
+
+	function onAppLoaded() {
+		$('#loaderContainer').fadeOut(500, function () {
+			$('body').css('overflow', 'auto');
+			for (var i = 0; i < studentsList.students.length; i++) {
+				studentsList.students[i].$element.delay(i * 200).fadeIn(400);
+			}
+		});
+	}
 
 /***/ },
 /* 1 */
@@ -93,6 +104,8 @@
 		value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _stats = __webpack_require__(2);
 
 	var _stats2 = _interopRequireDefault(_stats);
@@ -103,16 +116,30 @@
 
 	var $ = __webpack_require__(3);
 
-	var Student = function Student(firstName, lastName, picture, color) {
-		_classCallCheck(this, Student);
+	var Student = function () {
+		function Student(firstName, lastName, picture, color) {
+			_classCallCheck(this, Student);
 
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.picture = picture;
-		this.color = color;
-		this.stats = new _stats2.default();
-		this.id;
-	};
+			this.firstName = firstName;
+			this.lastName = lastName;
+			this.picture = picture;
+			this.color = color;
+			this.status = null;
+			this.stats = new _stats2.default(this);
+			this.id;
+		}
+
+		_createClass(Student, [{
+			key: 'setStatus',
+			value: function setStatus(status) {
+				this.status = status;
+				this.$element.find('.appel i').removeClass('selected');
+				this.$element.find('.' + status).addClass('selected');
+			}
+		}]);
+
+		return Student;
+	}();
 
 	exports.default = Student;
 
@@ -120,7 +147,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -131,9 +158,10 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Stats = function () {
-		function Stats() {
+		function Stats(student) {
 			_classCallCheck(this, Stats);
 
+			this.student = student;
 			this.presence = 0;
 			this.participation = 0;
 			this.pertinence = 0;
@@ -142,10 +170,32 @@
 		}
 
 		_createClass(Stats, [{
-			key: "getScore",
+			key: 'setValue',
+			value: function setValue(stat, value) {
+				this[stat] = value;
+				this.student.$element.find('.' + stat + ' .statValue').html(value);
+				this.setScore(this.getScore());
+			}
+		}, {
+			key: 'modValue',
+			value: function modValue(stat, mod) {
+				this[stat] += mod;
+				this.student.$element.find('.' + stat + ' .statValue').html(this[stat]);
+				this.setScore(this.getScore());
+			}
+		}, {
+			key: 'setScore',
+			value: function setScore(value) {
+				this.student.$element.find('.score').html(value + ' points');
+			}
+		}, {
+			key: 'getScore',
 			value: function getScore() {
 				var s = 0;
 				for (var stat in this) {
+					if (typeof this[stat] !== 'number') {
+						continue;
+					}
 					s += this[stat];
 				}
 				return s;
@@ -10385,23 +10435,30 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	var $ = __webpack_require__(3);
-
 	var students = [];
 
-	function init(list, id) {
+	function init(list, id, col) {
 
 		exports.students = students = list;
-		var $template = $(id).children().detach();
+		var $template = $(id).find('.student').detach();
 
-		for (var i = 0; i < students.length; i++) {
+		var columns = [];
+		for (var i = 0; i < col; i++) {
+			columns.push($('<div>').addClass('col-md-' + 12 / col).appendTo(id));
+		};
+		console.log(columns);
+		var colIndex = 0;
+
+		sortBy.lastName();
+
+		var _loop = function _loop() {
 
 			var s = students[i];
 			var $clone = $template.clone();
@@ -10410,14 +10467,110 @@
 			$clone.find('.firstName').html(s.firstName);
 			$clone.find('.lastName').html(s.lastName);
 			$clone.find('.name').css('background-color', s.color);
-			$clone.find('.score').html(s.stats.getScore() + " pts");
-			$clone.appendTo(id);
+
+			var $statClone = $clone.find('.stat').detach();
+
+			var _loop2 = function _loop2(stat) {
+
+				if (typeof s.stats[stat] !== 'number') {
+					return 'continue';
+				}
+				var statName = stat;
+				var statValue = s.stats[stat];
+
+				var $stat = $statClone.clone();
+				$stat.addClass(statName).appendTo($clone.find('ul'));
+
+				$stat.children('.statName').html(statName + ' : ');
+				$stat.children('.statValue').html(statValue);
+
+				$stat.children('.minus').on('click', function () {
+					s.stats.modValue(statName, -1);
+				});
+
+				$stat.children('.plus').on('click', function () {
+					s.stats.modValue(statName, 1);
+				});
+			};
+
+			for (var stat in s.stats) {
+				var _ret2 = _loop2(stat);
+
+				if (_ret2 === 'continue') continue;
+			}
+
+			$clone.find('.expandStats').on('click', function () {
+				$clone.find('.stats').toggle(400, function () {
+					$clone.find('.expandStats').toggleClass('open');
+				});
+			});
+
+			$clone.find('.present').on('click', function () {
+				s.setStatus('present');
+				console.log(s);
+			});
+
+			$clone.find('.late').on('click', function () {
+				s.setStatus('late');
+				console.log(s);
+			});
+
+			$clone.find('.absent').on('click', function () {
+				s.setStatus('absent');
+				console.log(s);
+			});
+
 			s.id = i;
+			s.$element = $clone;
+			s.stats.setScore(s.stats.getScore());
+
+			$clone.appendTo(columns[colIndex]);
+
+			colIndex++;
+			if (colIndex >= col) {
+				colIndex = 0;
+			}
+		};
+
+		for (var i = 0; i < students.length; i++) {
+			_loop();
+		}
+	};
+
+	function hide(student) {
+		student.$element.find('.student').transition({
+			scale: 0,
+			//perspective: '100px',
+			rotateY: '90deg'
+		}, 400, 'ease');
+	}
+
+	function show(student) {
+		student.$element.find('.student').transition({
+			scale: [0.8, 1.2]
+		}).transition({
+			scale: [1.2, 0.8]
+		}).transition({
+			scale: [1, 1]
+		});
+	}
+
+	var sortBy = {
+		lastName: function lastName() {
+			students.sort(function (s1, s2) {
+				return s1.lastName.localeCompare(s2.lastName);
+			});
+		},
+		score: function score() {
+			students.sort(function (s1, s2) {
+				return s1.stats.getScore() - s2.stats.getScore();
+			});
 		}
 	};
 
 	exports.students = students;
 	exports.init = init;
+	exports.hide = hide;
 
 /***/ },
 /* 5 */
@@ -10435,8 +10588,6 @@
 	var secret = _interopRequireWildcard(_slack);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var $ = __webpack_require__(3);
 
 	var profiles = [];
 
@@ -10471,20 +10622,23 @@
 				// On lance une requete pour recupérer les infos de l'utilisateur grace a son id et on ajout la requete au tableau requests
 				requests.push($.ajax('https://slack.com/api/users.info?token=' + tk + '&user=' + ids[i] + '&pretty=1').done(function (data) {
 
-					//Quand cette requete est terminée, on crée un objet qui va accueillir les informations de chaque utilisateur
-					var member = {};
-					var slackProfile = data.user.profile;
+					if (!data.user.is_admin) {
 
-					member.firstName = slackProfile.first_name;
-					member.lastName = slackProfile.last_name;
-					member.picture = slackProfile.image_192;
-					member.id = data.user.id;
-					member.color = '#' + data.user.color;
+						//Quand cette requete est terminée, on crée un objet qui va accueillir les informations de chaque utilisateur
+						var member = {};
+						var slackProfile = data.user.profile;
 
-					//console.log(data.user);
+						member.firstName = slackProfile.first_name;
+						member.lastName = slackProfile.last_name;
+						member.picture = slackProfile.image_192;
+						member.id = data.user.id;
+						member.color = '#' + data.user.color;
 
-					// On l'ajoute au tableau profiles
-					profiles.push(member);
+						//console.log(data);
+
+						// On l'ajoute au tableau profiles
+						profiles.push(member);
+					}
 				}));
 			}
 
@@ -10506,11 +10660,14 @@
 /* 6 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var token = 'xoxp-86302774640-87013896737-92887622004-b8cba05c6f0c4e388a17747e102e8beb';
+	var groupID = 'G2J97PBUP';
+
 	exports.token = token;
 	exports.groupID = groupID;
 

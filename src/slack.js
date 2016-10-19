@@ -1,5 +1,4 @@
 import * as secret from './slack.private'
-var $ = require('jQuery');
 
 let profiles = [];
 
@@ -35,20 +34,24 @@ function getMembersInfos(callback, tk = secret.token, grpId = secret.groupID){
 				'https://slack.com/api/users.info?token=' + tk + '&user=' + ids[i] + '&pretty=1'
 			).done(function(data){
 
-				//Quand cette requete est terminée, on crée un objet qui va accueillir les informations de chaque utilisateur
-				let member = {}
-				let slackProfile = data.user.profile
-				
-				member.firstName = slackProfile.first_name;
-				member.lastName = slackProfile.last_name;
-				member.picture = slackProfile.image_192;
-				member.id = data.user.id;
-				member.color = '#' + data.user.color;
+				if (!data.user.is_admin) {
 
-				//console.log(data.user);
+					//Quand cette requete est terminée, on crée un objet qui va accueillir les informations de chaque utilisateur
+					let member = {}
+					let slackProfile = data.user.profile
+					
+					member.firstName = slackProfile.first_name;
+					member.lastName  = slackProfile.last_name;
+					member.picture   = slackProfile.image_192;
+					member.id        = data.user.id;
+					member.color     = '#' + data.user.color;
 
-				// On l'ajoute au tableau profiles
-				profiles.push(member);
+					//console.log(data);
+
+					// On l'ajoute au tableau profiles
+					profiles.push(member);					
+				}
+
 			}))
 		}
 

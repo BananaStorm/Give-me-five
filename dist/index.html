@@ -8,23 +8,35 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-	<!-- <a href="https://slack.com/oauth/authorize?scope=identity.basic&client_id=86302774640.92680881859"><img alt="Sign in with Slack" height="40" width="172" src="https://platform.slack-edge.com/img/sign_in_with_slack.png" srcset="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x" /></a> -->
+	<div id="loaderContainer">
+		<div class="loader"></div>
+	</div>	
+	<nav><h1 id="logo">give_me(<span>5</span>)</h1></nav>
 	<div class='container' id='students'>
-		<div class='col-md-3'>
-			<div class='student'>
-				<img class="picture">
-				<p class="name">
-					<span class="firstName"></span> <span class="lastName"></span>
-				</p>
-				<p class="score"></p>
-				<div class="icons">
-					<i class="fa fa-thumbs-up"></i>
-					<i class="fa fa-clock-o"></i>
-					<i class="fa fa-thumbs-down"></i>
-				</div>
+		<div class='student'>
+			<img class="picture">
+			<p class="name">
+				<span class="firstName"></span> <span class="lastName"></span>
+			</p>
+			<p class="score"></p>
+
+			<ul class="stats">
+				<li class="stat">
+					<i class="fa fa-minus minus"></i>
+					<i class="fa fa-plus plus"></i>
+					<span class="statName">présence : </span><span class="statValue">0</span>
+				</li>
+			</ul>
+			<div class="expandStats"><i class="fa fa-chevron-down"></i></div>
+			<div class="appel">
+				<i class="fa fa-check fa-2x present"></i>
+				<i class="fa fa-clock-o fa-2x late"></i>
+				<i class="fa fa-times fa-2x absent"></i>
 			</div>
-		</div>	
+		</div>
 	</div>
+	<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+	<script src="transit.js"></script>
 	<script src="bundle.js"></script>
 </body>
 </html>
