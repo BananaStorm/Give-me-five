@@ -1,3 +1,5 @@
+import * as data from './data'
+
 let students = [];
 
 function init(list, id, col){
@@ -17,60 +19,9 @@ function init(list, id, col){
 	for (var i = 0; i < students.length; i++) {
 		
 		let s = students[i];
-		let $clone = $template.clone();
-		$clone.attr('id', s.firstName + s.lastName);
-		$clone.find('.picture').attr('src', s.picture);
-		$clone.find('.firstName').html(s.firstName);
-		$clone.find('.lastName').html(s.lastName);
-		$clone.find('.name').css('background-color', s.color);
+		//let $clone = $template.clone();
 		
-		
-		let $statClone = $clone.find('.stat').detach();
-		
-		for (let stat in s.stats) {
-
-			if (typeof s.stats[stat] !== 'number') {continue}
-			let statName  = stat;
-			let statValue = s.stats[stat];
-			
-			let $stat = $statClone.clone()
-			$stat
-			.addClass(statName)
-			.appendTo($clone.find('ul'));
-			
-			$stat.children('.statName').html( statName + ' : ')
-			$stat.children('.statValue').html( statValue )
-
-			$stat.children('.minus').on('click', function(){
-				s.stats.modValue(statName, -1);
-			})
-
-			$stat.children('.plus').on('click', function(){
-				s.stats.modValue(statName, 1);
-			})
-			
-		}
-
-		$clone.find('.expandStats').on('click', function(){
-			$clone.find('.stats').toggle(400, function(){
-				$clone.find('.expandStats').toggleClass('open');
-			});
-		})
-
-		$clone.find('.present').on('click', function(){
-			s.setStatus('present');
-			console.log(s);
-		})
-
-		$clone.find('.late').on('click', function(){
-			s.setStatus('late');
-			console.log(s);
-		})
-
-		$clone.find('.absent').on('click', function(){
-			s.setStatus('absent');
-			console.log(s);
-		})
+		let $clone = createCardFrom($template, s);
 
 		s.id = i;
 		s.$element = $clone;
@@ -82,7 +33,6 @@ function init(list, id, col){
 		if (colIndex >= col) {
 			colIndex = 0;
 		}
-
 	}
 };
 
@@ -119,5 +69,66 @@ let sortBy = {
 		})
 	}
 };
+
+function createCardFrom($template, student){
+
+	let $clone = $template.clone();
+	$clone.attr('id', student.firstName + student.lastName);
+	$clone.find('.picture').attr('src', student.picture);
+	$clone.find('.firstName').html(student.firstName);
+	$clone.find('.lastName').html(student.lastName);
+	$clone.find('.name').css('background-color', student.color);
+	
+	
+	let $statClone = $clone.find('.stat').detach();
+	
+	for (let stat in student.stats) {
+
+		if (typeof student.stats[stat] !== 'number') {continue}
+		let statName  = stat;
+		let statValue = student.stats[stat];
+		
+		let $stat = $statClone.clone()
+		$stat
+		.addClass(statName)
+		.appendTo($clone.find('ul'));
+		
+		$stat.children('.statName').html( statName + ' : ')
+		$stat.children('.statValue').html( statValue )
+
+		$stat.children('.minus').on('click', function(){
+			student.stats.modValue(statName, -1);
+		})
+
+		$stat.children('.plus').on('click', function(){
+			student.stats.modValue(statName, 1);
+		})
+		
+	}
+
+	$clone.find('.expandStats').on('click', function(){
+		$clone.find('.stats').toggle(400, function(){
+			$clone.find('.expandStats').toggleClass('open');
+		});
+	})
+
+	$clone.find('.present').on('click', function(){
+		student.setStatus('present');
+		console.log(student);
+	})
+
+	$clone.find('.late').on('click', function(){
+		student.setStatus('late');
+		console.log(student);
+	})
+
+	$clone.find('.absent').on('click', function(){
+		student.setStatus('absent');
+		console.log(student);
+	})
+
+	return $clone;
+
+}
 
 export {students, init, hide}

@@ -1,9 +1,29 @@
 import Student from './student.class'
 import * as studentsList from './studentlist'
 import * as slack from './slack'
+import * as data  from './data'
 
 function init(){
+
 	$('.loader').fadeIn(500);
+
+	// IS THERE SOMETHING IN LOCAL STORAGE ?
+	if (localStorage.getItem('students')) {
+
+		// YES : studentsList.init(STORED DATA)		
+		let studentsData = data.getStudents();
+		let list = [];
+		for (let profile in studentsData) {
+			console.log(studentsData[profile])
+		}
+		//studentsList.init(studentsData);
+	} else {
+		// NO  : GET DATA FROM SLACK ?
+			// YES : studentsList.init(SLACK DATA)
+			// NO  : studentsList.init(BLANK) - ie : start from scratch		
+	}
+		
+
 	let s = [];
 
 	// Appel de getMembersInfos avec comme argument la fonction de callback qui sera appelée quand toutes mes requetes seront terminées

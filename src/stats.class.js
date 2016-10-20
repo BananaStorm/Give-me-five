@@ -9,6 +9,15 @@ export default class Stats {
 		this.oral = 0;
 	}
 
+	toJSON(){
+		let a = {};
+		for (let stat in this) {
+			if (typeof this[stat] !== 'number') {continue}
+			a[stat] = this[stat];
+		}
+		return a;		
+	}
+
 	setValue(stat, value) {
 		this[stat] = value;
 		this.student.$element.find('.' + stat + ' .statValue').html(value);
@@ -27,10 +36,16 @@ export default class Stats {
 	}
 	getScore(){
 		let s = 0;
+
+		return s;
+	}
+
+	toString(){
+		let a = [];
 		for (let stat in this) {
 			if (typeof this[stat] !== 'number') {continue}
-			s += this[stat];
+			a.push(stat +':'+ this[stat]);
 		}
-		return s;
+		return a.join('&');
 	}
 }

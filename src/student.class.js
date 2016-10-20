@@ -18,4 +18,8 @@ export default class Student {
 		this.$element.find('.appel i').removeClass('selected');
 		this.$element.find('.' + status).addClass('selected');
 	}
+
+	toString() {
+		return JSON.stringify(this)
+	}
 }

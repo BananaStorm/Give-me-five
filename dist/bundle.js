@@ -54,16 +54,38 @@
 
 	var studentsList = _interopRequireWildcard(_studentlist);
 
-	var _slack = __webpack_require__(5);
+	var _slack = __webpack_require__(6);
 
 	var slack = _interopRequireWildcard(_slack);
+
+	var _data = __webpack_require__(5);
+
+	var data = _interopRequireWildcard(_data);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function init() {
+
 		$('.loader').fadeIn(500);
+
+		// IS THERE SOMETHING IN LOCAL STORAGE ?
+		if (localStorage.getItem('students')) {
+
+			// YES : studentsList.init(STORED DATA)		
+			var studentsData = data.getStudents();
+			var list = [];
+			for (var profile in studentsData) {
+				console.log(studentsData[profile]);
+			}
+			//studentsList.init(studentsData);
+		} else {
+				// NO  : GET DATA FROM SLACK ?
+				// YES : studentsList.init(SLACK DATA)
+				// NO  : studentsList.init(BLANK) - ie : start from scratch		
+			}
+
 		var s = [];
 
 		// Appel de getMembersInfos avec comme argument la fonction de callback qui sera appelée quand toutes mes requetes seront terminées
@@ -136,6 +158,11 @@
 				this.$element.find('.appel i').removeClass('selected');
 				this.$element.find('.' + status).addClass('selected');
 			}
+		}, {
+			key: 'toString',
+			value: function toString() {
+				return JSON.stringify(this);
+			}
 		}]);
 
 		return Student;
@@ -170,6 +197,18 @@
 		}
 
 		_createClass(Stats, [{
+			key: 'toJSON',
+			value: function toJSON() {
+				var a = {};
+				for (var stat in this) {
+					if (typeof this[stat] !== 'number') {
+						continue;
+					}
+					a[stat] = this[stat];
+				}
+				return a;
+			}
+		}, {
 			key: 'setValue',
 			value: function setValue(stat, value) {
 				this[stat] = value;
@@ -192,13 +231,20 @@
 			key: 'getScore',
 			value: function getScore() {
 				var s = 0;
+
+				return s;
+			}
+		}, {
+			key: 'toString',
+			value: function toString() {
+				var a = [];
 				for (var stat in this) {
 					if (typeof this[stat] !== 'number') {
 						continue;
 					}
-					s += this[stat];
+					a.push(stat + ':' + this[stat]);
 				}
-				return s;
+				return a.join('&');
 			}
 		}]);
 
@@ -10435,13 +10481,21 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	exports.hide = exports.init = exports.students = undefined;
+
+	var _data = __webpack_require__(5);
+
+	var data = _interopRequireWildcard(_data);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	var students = [];
 
 	function init(list, id, col) {
@@ -10458,67 +10512,12 @@
 
 		sortBy.lastName();
 
-		var _loop = function _loop() {
+		for (var i = 0; i < students.length; i++) {
 
 			var s = students[i];
-			var $clone = $template.clone();
-			$clone.attr('id', s.firstName + s.lastName);
-			$clone.find('.picture').attr('src', s.picture);
-			$clone.find('.firstName').html(s.firstName);
-			$clone.find('.lastName').html(s.lastName);
-			$clone.find('.name').css('background-color', s.color);
+			//let $clone = $template.clone();
 
-			var $statClone = $clone.find('.stat').detach();
-
-			var _loop2 = function _loop2(stat) {
-
-				if (typeof s.stats[stat] !== 'number') {
-					return 'continue';
-				}
-				var statName = stat;
-				var statValue = s.stats[stat];
-
-				var $stat = $statClone.clone();
-				$stat.addClass(statName).appendTo($clone.find('ul'));
-
-				$stat.children('.statName').html(statName + ' : ');
-				$stat.children('.statValue').html(statValue);
-
-				$stat.children('.minus').on('click', function () {
-					s.stats.modValue(statName, -1);
-				});
-
-				$stat.children('.plus').on('click', function () {
-					s.stats.modValue(statName, 1);
-				});
-			};
-
-			for (var stat in s.stats) {
-				var _ret2 = _loop2(stat);
-
-				if (_ret2 === 'continue') continue;
-			}
-
-			$clone.find('.expandStats').on('click', function () {
-				$clone.find('.stats').toggle(400, function () {
-					$clone.find('.expandStats').toggleClass('open');
-				});
-			});
-
-			$clone.find('.present').on('click', function () {
-				s.setStatus('present');
-				console.log(s);
-			});
-
-			$clone.find('.late').on('click', function () {
-				s.setStatus('late');
-				console.log(s);
-			});
-
-			$clone.find('.absent').on('click', function () {
-				s.setStatus('absent');
-				console.log(s);
-			});
+			var $clone = createCardFrom($template, s);
 
 			s.id = i;
 			s.$element = $clone;
@@ -10530,10 +10529,6 @@
 			if (colIndex >= col) {
 				colIndex = 0;
 			}
-		};
-
-		for (var i = 0; i < students.length; i++) {
-			_loop();
 		}
 	};
 
@@ -10568,12 +10563,120 @@
 		}
 	};
 
+	function createCardFrom($template, student) {
+
+		var $clone = $template.clone();
+		$clone.attr('id', student.firstName + student.lastName);
+		$clone.find('.picture').attr('src', student.picture);
+		$clone.find('.firstName').html(student.firstName);
+		$clone.find('.lastName').html(student.lastName);
+		$clone.find('.name').css('background-color', student.color);
+
+		var $statClone = $clone.find('.stat').detach();
+
+		var _loop = function _loop(stat) {
+
+			if (typeof student.stats[stat] !== 'number') {
+				return 'continue';
+			}
+			var statName = stat;
+			var statValue = student.stats[stat];
+
+			var $stat = $statClone.clone();
+			$stat.addClass(statName).appendTo($clone.find('ul'));
+
+			$stat.children('.statName').html(statName + ' : ');
+			$stat.children('.statValue').html(statValue);
+
+			$stat.children('.minus').on('click', function () {
+				student.stats.modValue(statName, -1);
+			});
+
+			$stat.children('.plus').on('click', function () {
+				student.stats.modValue(statName, 1);
+			});
+		};
+
+		for (var stat in student.stats) {
+			var _ret = _loop(stat);
+
+			if (_ret === 'continue') continue;
+		}
+
+		$clone.find('.expandStats').on('click', function () {
+			$clone.find('.stats').toggle(400, function () {
+				$clone.find('.expandStats').toggleClass('open');
+			});
+		});
+
+		$clone.find('.present').on('click', function () {
+			student.setStatus('present');
+			console.log(student);
+		});
+
+		$clone.find('.late').on('click', function () {
+			student.setStatus('late');
+			console.log(student);
+		});
+
+		$clone.find('.absent').on('click', function () {
+			student.setStatus('absent');
+			console.log(student);
+		});
+
+		return $clone;
+	}
+
 	exports.students = students;
 	exports.init = init;
 	exports.hide = hide;
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.init = init;
+	exports.saveStudents = saveStudents;
+	exports.getStudents = getStudents;
+	exports.setStudent = setStudent;
+	var appel = void 0;
+	var students = void 0;
+
+	function init() {
+
+		var storedStudents = localStorage.getItem('students');
+		if (storedStudents) {
+			students = getStudents();
+		}
+	}
+
+	function saveStudents() {
+		localStorage.setItem('students', JSON.stringify(students));
+	}
+
+	function getStudents() {
+		var result = [];
+
+		var obj = JSON.parse(localStorage.getItem('students'));
+		for (var student in obj) {
+			obj[student] = JSON.parse(obj[student]);
+			result.push(obj[student]);
+		}
+
+		return obj;
+	}
+
+	function setStudent(student) {
+		students[student.firstName + '_' + student.lastName] = student.toString();
+	}
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10583,7 +10686,7 @@
 	});
 	exports.getMembersInfos = exports.getCode = exports.profiles = undefined;
 
-	var _slack = __webpack_require__(6);
+	var _slack = __webpack_require__(7);
 
 	var secret = _interopRequireWildcard(_slack);
 
@@ -10657,7 +10760,7 @@
 	exports.getMembersInfos = getMembersInfos;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -10665,7 +10768,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var token = 'xoxp-86302774640-87013896737-92887622004-b8cba05c6f0c4e388a17747e102e8beb';
+	var token = 'xoxp-86302774640-87013896737-93681594272-efcf523ae3370f33d0109c9db073b74f';
 	var groupID = 'G2J97PBUP';
 
 	exports.token = token;
