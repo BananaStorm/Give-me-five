@@ -46,8 +46,8 @@
 
 	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // SUPER SPAGHETTI CODE BY CLEMENT DUSSOL
-	// IT'S UGLY BUT IT WORKS
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // SUPER CRAPPY SPAGHETTI CODE BY CLEMENT DUSSOL
+	// IT'S UGLY AS F*CK BUT IT WORKS... KIND OF
 
 	var _student = __webpack_require__(1);
 
@@ -113,7 +113,7 @@
 			$('body').css('overflow', 'auto');
 			for (var i = 0; i < list.students.length; i++) {
 				//console.log(list.students[i].$element);
-				list.students[i].$element.delay(i * 200).fadeIn(400);
+				list.students[i].$element.delay(i * 50).fadeIn(200);
 			}
 		});
 	}
@@ -146,7 +146,7 @@
 		value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // SPAGHETTI WARNING
 
 	var _stats = __webpack_require__(2);
 
@@ -177,6 +177,9 @@
 			this.id;
 		}
 
+		// SET PRESENCE STATUS IN OBJECT AND IN HTML
+
+
 		_createClass(Student, [{
 			key: 'setStatus',
 			value: function setStatus(status) {
@@ -189,6 +192,9 @@
 				data.setStudent(this);
 				data.saveStudents();
 			}
+
+			// CALCULATE SCORE FROM STATS VALUES
+
 		}, {
 			key: 'getScore',
 			value: function getScore() {
@@ -201,6 +207,9 @@
 				}
 				return s;
 			}
+
+			// SET STAT VALUE IN OBJECT AND IN HTML
+
 		}, {
 			key: 'setStat',
 			value: function setStat(stat, value) {
@@ -212,6 +221,9 @@
 				data.setStudent(this);
 				data.saveStudents();
 			}
+
+			// INCREMENT / DECREMENT STAT VALUE IN OBJECT AND IN HTML
+
 		}, {
 			key: 'modStat',
 			value: function modStat(stat, mod) {
@@ -222,6 +234,9 @@
 				data.setStudent(this);
 				data.saveStudents();
 			}
+
+			// SET SCORE IN HTML
+
 		}, {
 			key: 'setScore',
 			value: function setScore(value) {
@@ -313,6 +328,8 @@
 	exports.setAppel = setAppel;
 	exports.saveAppel = saveAppel;
 	exports.getAppel = getAppel;
+	// PLEASE DONT READ THIS
+
 	var moment = __webpack_require__(4);
 
 	var appel = {
@@ -358,7 +375,7 @@
 	}
 
 	function setAppel(students) {
-		appel.day = moment().format('MMMM Do YYYY');
+		appel.day = moment().format('DD/MM/YYYY');
 		appel.hour = moment().format('HH');
 		for (var i = 0; i < students.length; i++) {
 			var s = students[i];
@@ -14815,24 +14832,31 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	var students = [];
+	// SPAGHETTI WARNING
 
-	var availableColors = ['#cc3333', '#dc5e37', '#ffb82f', '#999933', '#33cc86', '#1499ba', '#8e73c0', '#ff6699'];
+	var students = [];
+	var columns = [];
+
+	// COLOR PALETTE
+	var availableColors = ['rgb(204, 51, 51)', 'rgb(220, 94, 55)', 'rgb(255, 184, 47)', 'rgb(153, 153, 51)', 'rgb(51, 204, 134)', 'rgb(20, 153, 186)', 'rgb(142, 115, 192)', 'rgb(255, 102, 153)'];
 
 	function init(list, id, col) {
 
 		exports.students = students = list;
 		var $template = $(id).find('.student').detach();
 
-		var columns = [];
+		// CREATE COLUMNS DEPENDING ON COL
 		for (var i = 0; i < col; i++) {
 			columns.push($('<div>').addClass('col-md-' + 12 / col).appendTo(id));
 		};
 
+		// COL INDEX WILL BE USED TO DETERMINE WHICH COLUMN TO APPEND STUDENT IN
 		var colIndex = 0;
 
+		// SORT STUDENT LIST (alphabetical order lastName)
 		sortBy.lastName();
 
+		// CREATE AND APPEND HTML ELEMENT FOR EACH INSTANCE OF Student IN students
 		for (var i = 0; i < students.length; i++) {
 
 			var s = students[i];
@@ -14847,12 +14871,37 @@
 			}
 		}
 
+		/////////////////////////////////////////////////////////////
+		//													       //
+		//  BE PREPARED FOR THE SUPER DIRTY on.('click') FIESTA !  //
+		//													       //
+		/////////////////////////////////////////////////////////////
+
+		// ORDER ICONS ON CLICK
+		$('.orderBy').on('click', function () {
+			$('.orderBy').removeClass('selected');
+			$(this).addClass('selected');
+		});
+		$('.sortByName').on('click', function () {
+			reorderCards(sortBy.lastName, col);
+		});
+		$('.sortByScore').on('click', function () {
+			reorderCards(sortBy.score, col);
+		});
+		$('.sortByColor').on('click', function () {
+			reorderCards(sortBy.color, col);
+		});
+
+		// CREATE PALETTE 'ADD STUDENT' PANEL (depending on availableColors)
 		var $colorTemplate = $('#add .color').detach();
 
 		for (var i = 0; i < availableColors.length; i++) {
 			$colorTemplate.clone().css('background-color', availableColors[i]).appendTo('#palette');
 		}
 
+		$('#add .color:first').addClass('selected');
+
+		// 'ADD STUDENT' NAV ICON ON CLICK
 		$('.addUser').on('click', function () {
 			$(this).toggleClass('selected');
 			if ($('#add').css('display') == 'none') {
@@ -14864,15 +14913,19 @@
 			$('#appel').slideUp();
 		});
 
+		// COLOR SELECTOR ON CLICK
 		$('#add').on('click', '.color', function () {
 			$('#add .color').removeClass('selected');
 			$(this).addClass('selected');
 		});
 
+		// CANCEL 'ADD STUDENT' ON CLICK
 		$('#add .cancel').on('click', function () {
 			$('#add').slideUp();
+			$('.addUser').removeClass('selected');
 		});
 
+		// VALIDATE 'ADD STUDENT' ON CLICK : CREATE new Student + NEW HTML ELEMENT
 		$('#add .validate').on('click', function () {
 
 			var firstName = $('#add #firstName').val();
@@ -14884,17 +14937,20 @@
 			var color = $('#add .selected').css('background-color');
 
 			var student = new _student2.default(firstName, lastName, picture, color);
+			students.push(student);
 			var $card = createCardFrom($template, student);
 			columns[colIndex].append($card);
 			colIndex++;
 			if (colIndex >= col) {
 				colIndex = 0;
 			}
-			$card.fadeIn(400);
+			$card.fadeIn(200);
+			$('.addUser').removeClass('selected');
 			$('#add').slideUp();
 		});
 	};
 
+	// FONCTIONS DE TRI
 	var sortBy = {
 		lastName: function lastName() {
 			students.sort(function (s1, s2) {
@@ -14903,8 +14959,20 @@
 		},
 		score: function score() {
 			students.sort(function (s1, s2) {
-				return s1.getScore() - s2.getScore();
+				return s2.getScore() - s1.getScore();
 			});
+		},
+		color: function color() {
+			var r = [];
+			for (var i = 0; i < availableColors.length; i++) {
+				var sameColor = students.filter(function (s) {
+					console.log(availableColors[i], s.color);
+					return availableColors[i] == s.color;
+				});
+				r = r.concat(sameColor);
+			}
+			console.log(r);
+			exports.students = students = r;
 		}
 	};
 
@@ -14915,12 +14983,47 @@
 		return r[0];
 	}
 
+	// RE-ORDER HTML ELEMENTS DEPENDING ON students ARRAY
+	function reorderCards(sortFunction, col) {
+
+		var colIndex = 0;
+
+		var _loop = function _loop() {
+			var student = students[i];
+			student.$element.fadeOut(200, function () {
+				student.$element.detach();
+			});
+		};
+
+		for (var i = 0; i < students.length; i++) {
+			_loop();
+		}
+
+		sortFunction();
+
+		setTimeout(function () {
+			for (var i = 0; i < students.length; i++) {
+				console.log(students[i].$element);
+				columns[colIndex].append(students[i].$element);
+				students[i].$element.delay(50 * i).fadeIn(200);
+				colIndex++;
+				if (colIndex >= col) {
+					colIndex = 0;
+				}
+			}
+		}, 400);
+	}
+
+	// CREATE HTML CARD FROM Student INSTANCE (SUPER DIRTY on.(click) FIEST AGAIN !!)
 	function createCardFrom($template, student) {
 
 		// CLONE + INFOS FROM ARG: student
 		var $clone = $template.clone();
 		$clone.attr('id', student.firstName + '_' + student.lastName);
 		$clone.find('.picture').attr('src', student.picture);
+		$clone.find('.picture').on('error', function () {
+			$(this).attr('src', 'images/userdefault.png');
+		});
 		$clone.find('.firstName').html(student.firstName);
 		$clone.find('.lastName').html(student.lastName);
 		$clone.find('.name').css('background-color', student.color);
@@ -14943,7 +15046,7 @@
 		// FILL STATS
 		var $statClone = $clone.find('.stat').detach();
 
-		var _loop = function _loop(stat) {
+		var _loop2 = function _loop2(stat) {
 
 			if (typeof student.stats[stat] !== 'number') {
 				return 'continue';
@@ -14967,11 +15070,12 @@
 		};
 
 		for (var stat in student.stats) {
-			var _ret = _loop(stat);
+			var _ret2 = _loop2(stat);
 
-			if (_ret === 'continue') continue;
+			if (_ret2 === 'continue') continue;
 		}
 
+		// EXPAND STATS ON CLICK
 		$clone.find('.expandStats').on('click', function () {
 			$clone.find('.stats').toggle(400, function () {
 				$clone.find('.expandStats').toggleClass('open');
@@ -14981,14 +15085,20 @@
 		// PRESENCE
 		$clone.find('.present').on('click', function () {
 			student.setStatus('present');
+			$('#appel .status i').removeClass('selected');
+			$('#appel #' + student.firstName + '_' + student.lastName).find('.present').addClass('selected');
 		});
 
 		$clone.find('.late').on('click', function () {
 			student.setStatus('late');
+			$('#appel .status i').removeClass('selected');
+			$('#appel #' + student.firstName + '_' + student.lastName).find('.late').addClass('selected');
 		});
 
 		$clone.find('.absent').on('click', function () {
 			student.setStatus('absent');
+			$('#appel .status i').removeClass('selected');
+			$('#appel #' + student.firstName + '_' + student.lastName).find('.absent').addClass('selected');
 		});
 
 		// ON CLICK ON EDIT ICON
@@ -15035,7 +15145,6 @@
 
 		return $clone;
 	}
-
 	exports.students = students;
 	exports.init = init;
 	exports.getStudentByName = getStudentByName;
@@ -15062,23 +15171,25 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+	// SPAGHETTI WARNING
+
 	var moment = __webpack_require__(4);
 	var checked = exports.checked = false;
 	function init() {
 
-		// STORED APPEL ?
+		// APPEL STORED IN LOCAL STORAGE ?
 		if (data.exists('appel')) {
 			// YES : COMPARE DAY
 			var day = data.getAppel('day');
-			var today = moment().format('MMMM Do YYYY');
+			var today = moment().format('DD/MM/YYYY');
 
 			// TODAY ? : COMPARE HOUR
 			if (day == today) {
-				var hour = data.getAppel('hour');
+				var hour = parseInt(data.getAppel('hour'));
 				console.log(data.getAppel());
-				var now = moment().format('HH');
+				var now = parseInt(moment().format('HH'));
 
-				if (hour <= '12' && hour >= '9' && now <= '12' && now >= '9' || hour <= '17' && hour >= '13' && now <= '23' && now >= '13') {
+				if (hour <= 12 && hour >= 9 && now <= 12 && now >= 9 || hour <= 17 && hour >= 13 && now <= 23 && now >= 13) {
 					exports.checked = checked = true;
 				} else {
 					exports.checked = checked = false;
@@ -15086,17 +15197,23 @@
 			}
 		}
 
+		// DETACH TEMPLATE APPEL PANEL LINE
 		var $template = $('#appel').find('.studentStatus').detach();
+
+		// FOR EACH STUDENT IN LIST.STUDENT
 
 		var _loop = function _loop() {
 
+			// CLONE TEMPLATE
 			var s = list.students[i];
 			var $clone = $template.clone();
 
+			// INJECT INFO FROM USER
 			$clone.find('.firstName').html(s.firstName);
 			$clone.find('.lastName').html(s.lastName);
 			$clone.attr('id', s.firstName + '_' + s.lastName);
 
+			// PRESENCE BUTTONS ON CLICK (DIRTY)
 			$clone.find('.present, .late, .absent').on('click', function () {
 				$clone.find('.present, .late, .absent').removeClass('selected');
 				var classes = $(this).attr('class').split(' ');
@@ -15118,8 +15235,9 @@
 			_loop();
 		}
 
+		// IF APPEL ALREADY DONE
 		if (checked) {
-			console.log('coucou');
+			// GET APPEL DATA (STUDENTS PRESENCE STATUS)
 			var appelData = data.getAppel();
 			for (var studentName in appelData.students) {
 				var nameArray = studentName.split('_');
@@ -15130,10 +15248,12 @@
 				console.log(studentName);
 				$('#appel #' + studentName).find('.' + status).addClass('selected');
 			}
+			// ELSE : APPEL STATE 'en attente de validation'
 		} else {
 			$('#appel .state').find('span').html('en attente de validation');
 		}
 
+		// NAV ICON ON CLICK 
 		$('nav .appel').on('click', function () {
 			$(this).toggleClass('selected');
 			if ($('#appel').css('display') == 'none') {
@@ -15145,17 +15265,19 @@
 			$('#add').slideUp();
 		});
 
+		// VALIDATE APPEL BUTTON ON CLICK
 		$('#appel .validate').on('click', function () {
 			if (!checked) {
 				processAppel();
 				exports.checked = checked = true;
-				$('#appel .state').addClass('checked').find('span').html('validé le : ' + moment().format('DD/MM/YYYY') + ' à :' + moment().format('HH'));
+				$('#appel .state').addClass('checked').find('span').html('validé le ' + moment().format('DD/MM/YYYY') + ' à ' + moment().format('HH'));
 				data.setAppel(list.students);
 				data.saveAppel();
 			}
 		});
 	}
 
+	// PROCESS APPEL AND GIVE POINTS TO STUDENTS ACCORDING ON THEIR PRESENCE STATE (present|late|absent);
 	function processAppel() {
 		for (var i = 0; i < list.students.length; i++) {
 			var s = list.students[i];

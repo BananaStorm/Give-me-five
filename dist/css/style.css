@@ -1,7 +1,7 @@
 /*
 	COLORS :
 		
-		deepblue:#0a1d26;
+		deepblue: #0e1f2d;
 		verydeepblue: #030014;
 
 		red :   #ee2c23;
@@ -41,7 +41,7 @@ body {
 	display: none;
     width: 64px;
     height: 64px;
-    border: 8px solid #0a1d26; /* Light grey */
+    border: 8px solid #0e1f2d; /* Light grey */
     border-top: 8px solid #ee2c23; /* Blue */
     border-radius: 50%;
 
@@ -63,7 +63,7 @@ nav {
 	display: flex;
 	align-items: stretch;
 	flex-direction: row;
-	background-color: #0a1d26;	
+	background-color: #0e1f2d;	
 }
 
 
@@ -80,13 +80,22 @@ nav i {
 	align-self: flex-end;
 	padding: 16px;
 	cursor: pointer;
-	color: #030014;
+	color: #9cac86;
 	transition: 0.4s;
+}
+
+nav i:hover {
+	background-color: #030014;
 }
 
 nav i.selected {
 	background-color: #030014;
 	color: #9cac86;
+}
+
+nav .orderBy {
+	width: 48px;
+	display: block;
 }
 
 #appel {
@@ -127,7 +136,7 @@ nav i.selected {
 }
 
 .studentStatus i {
-	color: #0a1d26;
+	color: #0e1f2d;
 	align-self: flex-end;
 	transition: 0.4s;
 }
@@ -138,7 +147,7 @@ nav i.selected {
 }
 
 #appel .validate, #appel .cancel {
-	background-color: #0a1d26;
+	background-color: #0e1f2d;
 	width: 50%;
 	padding: 12px;
 	text-align: center;
@@ -181,7 +190,7 @@ nav i.selected {
 }
 
 #add input:focus {
-	background-color: #0a1d26;
+	background-color: #0e1f2d;
 	outline: none;
 }
 
@@ -203,7 +212,7 @@ nav i.selected {
 }
 
 #add i {
-	background-color: #0a1d26;
+	background-color: #0e1f2d;
 	width: 50%;
 	padding: 12px;
 	text-align: center;
@@ -223,7 +232,7 @@ nav i.selected {
 }
 
 .student {
-	background-color: #0a1d26;
+	background-color: #0e1f2d;
 	margin-top: 32px;
 	position: relative;
 	display: none;
@@ -238,7 +247,7 @@ nav i.selected {
 	text-align: center;
 	padding: 2px 0;
 	right: 0;
-	background-color: #0a1d26;
+	background-color: #0e1f2d;
 	color: #9cac86;
 }
 
@@ -248,7 +257,7 @@ nav i.selected {
 
 .edit input {
 	width: 50%;
-	background-color: #0a1d26;
+	background-color: #0e1f2d;
 	text-align: center;
 	padding: 8px 16px;
 	border: none;
@@ -258,7 +267,7 @@ nav i.selected {
 }
 
 .edit input:focus {
-	background-color: #0a1d26;
+	background-color: #0e1f2d;
 	outline: none;
 }
 
@@ -293,7 +302,7 @@ nav i.selected {
 	text-align: center;
 	padding: 4px;
 	background-color: #030014;
-	color: #0a1d26;
+	color: #0e1f2d;
 	cursor:pointer;
 }
 

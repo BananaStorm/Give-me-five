@@ -1,3 +1,5 @@
+// SPAGHETTI WARNING
+
 import Stats from './stats.class'
 import * as data from './data'
 
@@ -13,6 +15,7 @@ export default class Student {
 		this.id;
 	}
 
+	// SET PRESENCE STATUS IN OBJECT AND IN HTML
 	setStatus(status) {
 		
 		this.status = status;
@@ -24,6 +27,7 @@ export default class Student {
 		data.saveStudents();
 	}
 	
+	// CALCULATE SCORE FROM STATS VALUES
 	getScore(){
 		let s = 0;
 		for (let stat in this.stats) {
@@ -33,6 +37,7 @@ export default class Student {
 		return s;
 	}
 
+	// SET STAT VALUE IN OBJECT AND IN HTML
 	setStat(stat, value) {
 		
 		this.stats[stat] = value;
@@ -44,6 +49,7 @@ export default class Student {
 
 	}
 
+	// INCREMENT / DECREMENT STAT VALUE IN OBJECT AND IN HTML
 	modStat(stat, mod) {
 		this.stats[stat] += mod;
 		this.$element.find('.' + stat + ' .statValue').html(this.stats[stat]);
@@ -53,6 +59,7 @@ export default class Student {
 		data.saveStudents();
 	}
 
+	// SET SCORE IN HTML
 	setScore(value) {
 		this.$element.find('.score').html(value + ' points')
 	}

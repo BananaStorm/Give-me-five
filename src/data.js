@@ -1,3 +1,5 @@
+// PLEASE DONT READ THIS
+
 let moment = require('moment');
 
 let appel = {
@@ -41,7 +43,7 @@ export function setStudent(student) {
 }
 
 export function setAppel(students){
-	appel.day  = moment().format('MMMM Do YYYY');
+	appel.day  = moment().format('DD/MM/YYYY');
 	appel.hour = moment().format('HH');
 	for (var i = 0; i < students.length; i++) {
 		let s = students[i];

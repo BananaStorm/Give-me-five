@@ -1,23 +1,25 @@
+// SPAGHETTI WARNING
+
 import * as list from './studentlist';
 import * as data from './data'
 let moment = require('moment')
 export let checked = false;
 export function init(){
 
-	// STORED APPEL ?
+	// APPEL STORED IN LOCAL STORAGE ?
 	if(data.exists('appel')) {
 		// YES : COMPARE DAY
 		let day = data.getAppel('day');
-		let today = moment().format('MMMM Do YYYY');
+		let today = moment().format('DD/MM/YYYY');
 
 		// TODAY ? : COMPARE HOUR
 		if (day == today) {
-			let hour = data.getAppel('hour');
+			let hour = parseInt(data.getAppel('hour'));
 			console.log(data.getAppel());
-			let now  = moment().format('HH');
+			let now  = parseInt(moment().format('HH'));
 
-			if (hour <= '12' && hour >= '9' && now <= '12' && now >= '9'
-			||  hour <= '17' && hour >= '13' && now <= '23' && now >= '13') {
+			if (hour <= 12 && hour >= 9 && now <= 12 && now >= 9
+			||  hour <= 17 && hour >= 13 && now <= 23 && now >= 13) {
 				checked = true;
 			} else {
 				checked = false;
@@ -25,16 +27,22 @@ export function init(){
 		}
 	}
 
+	// DETACH TEMPLATE APPEL PANEL LINE
 	let $template = $('#appel').find('.studentStatus').detach();
+
+	// FOR EACH STUDENT IN LIST.STUDENT
 	for (var i = 0; i < list.students.length; i++) {
 		
+		// CLONE TEMPLATE
 		let s = list.students[i];
 		let $clone = $template.clone();
 
+		// INJECT INFO FROM USER
 		$clone.find('.firstName').html(s.firstName);
 		$clone.find('.lastName').html(s.lastName);
 		$clone.attr('id', s.firstName+'_'+s.lastName);
 
+		// PRESENCE BUTTONS ON CLICK (DIRTY)
 		$clone.find('.present, .late, .absent').on('click', function(){
 			$clone.find('.present, .late, .absent').removeClass('selected');
 			let classes = $(this).attr('class').split(' ');
@@ -52,8 +60,9 @@ export function init(){
 		$clone.appendTo('#status');
 	}
 
+	// IF APPEL ALREADY DONE
 	if (checked) {
-		console.log('coucou')
+		// GET APPEL DATA (STUDENTS PRESENCE STATUS)
 		let appelData = data.getAppel();
 		for (let studentName in appelData.students) {
 			let nameArray = studentName.split('_');
@@ -64,12 +73,12 @@ export function init(){
 			console.log(studentName);
 			$('#appel #' + studentName).find('.' + status).addClass('selected');
 		}
+	// ELSE : APPEL STATE 'en attente de validation'
 	} else {
 		$('#appel .state').find('span').html('en attente de validation');
 	}
 
-
-
+	// NAV ICON ON CLICK 
 	$('nav .appel').on('click', function(){
 		$(this).toggleClass('selected');
 		if ($('#appel').css('display') == 'none') {$('#appel').slideDown()}
@@ -78,17 +87,19 @@ export function init(){
 		$('#add').slideUp();
 	})
 
+	// VALIDATE APPEL BUTTON ON CLICK
 	$('#appel .validate').on('click', function(){
 		if (!checked) {
 			processAppel();
 			checked = true;
-			$('#appel .state').addClass('checked').find('span').html('validé le : ' + moment().format('DD/MM/YYYY') + ' à :' + moment().format('HH'));
+			$('#appel .state').addClass('checked').find('span').html('validé le ' + moment().format('DD/MM/YYYY') + ' à ' + moment().format('HH'));
 			data.setAppel(list.students);
 			data.saveAppel();
 		}
 	})
 }
 
+// PROCESS APPEL AND GIVE POINTS TO STUDENTS ACCORDING ON THEIR PRESENCE STATE (present|late|absent);
 function processAppel(){
 	for (var i = 0; i < list.students.length; i++) {
 		let s = list.students[i];

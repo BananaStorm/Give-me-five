@@ -1,5 +1,5 @@
-// SUPER SPAGHETTI CODE BY CLEMENT DUSSOL
-// IT'S UGLY BUT IT WORKS
+// SUPER CRAPPY SPAGHETTI CODE BY CLEMENT DUSSOL
+// IT'S UGLY AS F*CK BUT IT WORKS... KIND OF
 
 import Student from './student.class'
 import * as list  from './studentlist'
@@ -50,7 +50,7 @@ function onAppLoaded(){
 		$('body').css('overflow', 'auto');
 		for (var i = 0; i < list.students.length; i++) {
 			//console.log(list.students[i].$element);
-			list.students[i].$element.delay(i*200).fadeIn(400);
+			list.students[i].$element.delay(i*50).fadeIn(200);
 		}
 	});
 }
