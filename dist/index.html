@@ -11,13 +11,41 @@
 	<div id="loaderContainer">
 		<div class="loader"></div>
 	</div>	
-	<nav><h1 id="logo">give_me(<span>5</span>)</h1></nav>
+	<nav><h1 id="logo">give_me(<span>5</span>)</h1><i class="appel fa fa-list fa-3x"></i><i class="addUser fa fa-user-plus fa-3x"></i></nav>
+	<div id="appel">
+		<div class="state">Etat de l'appel : <span class='appelState'></span></div>
+		<div id="status">
+			<div class="studentStatus">
+				<p class="firstName"></p><p class="lastName"></p>
+				<i class="fa fa-check fa-2x present"></i>
+				<i class="fa fa-clock-o fa-2x late"></i>
+				<i class="fa fa-times fa-2x absent"></i>
+			</div>			
+		</div>
+		<i class="fa fa-check fa-2x validate"></i><i class="fa fa-times fa-2x cancel"></i>
+	</div>
+	<div id="add">
+		<input type="text" placeholder="Prénom" id="firstName">
+		<input type="text" placeholder="Nom" id="lastName">
+		<input type="text" placeholder="URL de l'image" id="picture">
+		<div id="palette"><div class="color"></div></div>
+		<i class="fa fa-check fa-2x validate"></i><i class="fa fa-times fa-2x cancel"></i>
+	</div>
 	<div class='container' id='students'>
+
 		<div class='student'>
+			<i class="editIcon fa fa-pencil fa-2x"></i>
+			<i class="validateIcon fa fa-check fa-2x"></i>
 			<img class="picture">
+			<div class='edit'>
+				<input type="text" placeholder='Prénom' class="editfirstName"><input type="text" placeholder='Nom' class="editlastName">
+			</div>
 			<p class="name">
 				<span class="firstName"></span> <span class="lastName"></span>
 			</p>
+			<div class='edit editColor'>
+				<div class="color"></div>
+			</div>
 			<p class="score"></p>
 
 			<ul class="stats">

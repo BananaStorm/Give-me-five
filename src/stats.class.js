@@ -18,28 +18,6 @@ export default class Stats {
 		return a;		
 	}
 
-	setValue(stat, value) {
-		this[stat] = value;
-		this.student.$element.find('.' + stat + ' .statValue').html(value);
-		this.setScore(this.getScore());
-
-	}
-
-	modValue(stat, mod) {
-		this[stat] += mod;
-		this.student.$element.find('.' + stat + ' .statValue').html(this[stat]);
-		this.setScore(this.getScore());
-	}
-
-	setScore(value) {
-		this.student.$element.find('.score').html(value + ' points')
-	}
-	getScore(){
-		let s = 0;
-
-		return s;
-	}
-
 	toString(){
 		let a = [];
 		for (let stat in this) {

@@ -1,8 +1,14 @@
-let appel;
-let students;
+let moment = require('moment');
+
+let appel = {
+	day 	 : '',
+	hour 	 : '',
+	students : {}
+}
+export let students = {};
 
 export function init(){
-	
+
 	let storedStudents = localStorage.getItem('students')
 	if (storedStudents) {
 		students = getStudents();
@@ -22,9 +28,32 @@ export function getStudents(){
 		result.push(obj[student]);
 	}
 
-	return obj;
+	return result;
+}
+
+export function exists(name) {
+	if (!localStorage.getItem(name)) {return false};
+	return true;
 }
 
 export function setStudent(student) {
 	students[student.firstName + '_' + student.lastName] = student.toString();
+}
+
+export function setAppel(students){
+	appel.day  = moment().format('MMMM Do YYYY');
+	appel.hour = moment().format('HH');
+	for (var i = 0; i < students.length; i++) {
+		let s = students[i];
+		appel.students[s.firstName+'_'+s.lastName] = s.status;
+	}
+}
+
+export function saveAppel(){
+	localStorage.setItem('appel', JSON.stringify(appel));
+}
+
+export function getAppel(prop) {
+	let appelData = JSON.parse(localStorage.getItem('appel'));
+	if (prop) {return appelData[prop]} else {return appelData}
 }

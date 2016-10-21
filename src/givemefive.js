@@ -1,47 +1,46 @@
+// SUPER SPAGHETTI CODE BY CLEMENT DUSSOL
+// IT'S UGLY BUT IT WORKS
+
 import Student from './student.class'
-import * as studentsList from './studentlist'
-import * as slack from './slack'
+import * as list  from './studentlist'
 import * as data  from './data'
+import * as appel from './appel'
 
 function init(){
 
 	$('.loader').fadeIn(500);
 
+// STUDENT LIST
+	let studentsList = [];
 	// IS THERE SOMETHING IN LOCAL STORAGE ?
-	if (localStorage.getItem('students')) {
+	if (data.exists('students')) {
 
-		// YES : studentsList.init(STORED DATA)		
+		console.log('data found');
+		// YES : RETRIEVE DATA
 		let studentsData = data.getStudents();
-		let list = [];
-		for (let profile in studentsData) {
-			console.log(studentsData[profile])
+		for (var i = 0; i < studentsData.length; i++) {
+			let newStudent = dataToStudent(studentsData[i]);
+			data.setStudent(newStudent);
+			studentsList.push(newStudent);
 		}
-		//studentsList.init(studentsData);
+
+		console.log(studentsData);
 	} else {
-		// NO  : GET DATA FROM SLACK ?
-			// YES : studentsList.init(SLACK DATA)
-			// NO  : studentsList.init(BLANK) - ie : start from scratch		
+		// NO : NO DATA FOUND
+		console.log('no data found')
 	}
-		
+	// INIT LIST
+	list.init(studentsList, '#students', 4);
 
-	let s = [];
-
-	// Appel de getMembersInfos avec comme argument la fonction de callback qui sera appelée quand toutes mes requetes seront terminées
-	slack.getMembersInfos(function(profiles){
-		
-		// Pour chaque profil récupéré par mes requetes, on crée une instance de Student		
-		for (var i = 0; i < profiles.length; i++) {
-			let p = profiles[i];
-			s.push(new Student(p.firstName, p.lastName, p.picture, p.color))
-		}
-		// on initie studentsList en passant la liste des instances de Student
-		studentsList.init(s, "#students", 4);
-		onAppLoaded();
-		console.log(studentsList)
-
-		//studentsList.hide(studentsList.students[0]);
-	});
+// APPEL 
 	
+	// IS THERE SOMETHING IN LOCAL STORAGE ?
+		// YES : RETRIEVE DATA
+		// NO : NO DATA FOUND
+	
+	// INIT APPEL
+	appel.init();
+	onAppLoaded();
 }
 
 init();
@@ -49,9 +48,27 @@ init();
 function onAppLoaded(){
 	$('#loaderContainer').fadeOut(500, function(){
 		$('body').css('overflow', 'auto');
-		for (var i = 0; i < studentsList.students.length; i++) {
-			studentsList.students[i].$element.delay(i*200).fadeIn(400);
+		for (var i = 0; i < list.students.length; i++) {
+			list.students[i].$element.delay(i*200).fadeIn(400);
 		}
 	});
+}
+
+function dataToStudent(data) {
+	
+	let s = new Student();
+	
+	for (let prop in data) {
+
+		if (s.hasOwnProperty(prop) && typeof data[prop] != 'object') {
+			s[prop] = data[prop];
+		}
+		if (prop == 'stats') {
+			for (let stat in data['stats']) {
+				s.stats[stat] = data['stats'][stat]
+			}
+		}
+	}
+	return s
 }
 
