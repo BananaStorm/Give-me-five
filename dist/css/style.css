@@ -66,6 +66,8 @@ nav {
 	background-color: #0a1d26;	
 }
 
+
+
 #logo {
 	font-size: 3em;
 	color: #e4e78c;
@@ -78,6 +80,13 @@ nav i {
 	align-self: flex-end;
 	padding: 16px;
 	cursor: pointer;
+	color: #030014;
+	transition: 0.4s;
+}
+
+nav i.selected {
+	background-color: #030014;
+	color: #9cac86;
 }
 
 #appel {

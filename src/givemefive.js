@@ -49,6 +49,7 @@ function onAppLoaded(){
 	$('#loaderContainer').fadeOut(500, function(){
 		$('body').css('overflow', 'auto');
 		for (var i = 0; i < list.students.length; i++) {
+			//console.log(list.students[i].$element);
 			list.students[i].$element.delay(i*200).fadeIn(400);
 		}
 	});

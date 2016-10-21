@@ -50,8 +50,11 @@ function init(list, id, col){
 	}
 
 	$('.addUser').on('click', function(){
+		$(this).toggleClass('selected');
 		if ($('#add').css('display') == 'none') {$('#add').slideDown()}
 		else {$('#add').slideUp()}
+		$('.appel').removeClass('selected')
+		$('#appel').slideUp();
 	})
 
 
@@ -181,7 +184,7 @@ function createCardFrom($template, student){
 		$(this).slideUp();
 		$clone.find('.validateIcon').slideDown();
 		$clone.find('.edit').slideDown();
-		$clone.find('.editColor').css('display', 'flex');
+		//$clone.find('.editColor').css('display', 'flex');
 		$clone.find('.name').slideUp();
 		$clone.find('.editfirstName').focus().val(student.firstName);
 		$clone.find('.editlastName').val(student.lastName);

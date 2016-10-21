@@ -1,7 +1,7 @@
 import * as list from './studentlist';
 import * as data from './data'
 let moment = require('moment')
-export let checked = true;
+export let checked = false;
 export function init(){
 
 	// STORED APPEL ?
@@ -71,8 +71,11 @@ export function init(){
 
 
 	$('nav .appel').on('click', function(){
+		$(this).toggleClass('selected');
 		if ($('#appel').css('display') == 'none') {$('#appel').slideDown()}
 		else {$('#appel').slideUp()}
+		$('.addUser').removeClass('selected')
+		$('#add').slideUp();
 	})
 
 	$('#appel .validate').on('click', function(){
